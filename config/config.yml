@@ -1,0 +1,68 @@
+# Deep Sight Configuration
+
+# Ollama LLM Configuration
+ollama:
+  host: localhost
+  port: 11434
+  model: llava
+  temperature: 0.7
+  max_tokens: 2048
+  timeout: 120
+
+# Application Ports
+app:
+  ui_port: 8501  # Streamlit UI port
+  api_port: 8000  # FastAPI port
+  cors:
+    enabled: true
+    origins:
+      - "http://localhost:8501"
+      - "http://localhost:8000"
+      - "*"
+    allow_credentials: true
+    allow_methods:
+      - "*"
+    allow_headers:
+      - "*"
+
+# TensorFlow OCR Configuration
+tensorflow:
+  model_path: ./tensor/ocr_model
+  model_type: keras-ocr  # keras-ocr or tesseract
+  confidence_threshold: 0.5
+
+# Image Processing
+image:
+  max_width: 1024
+  max_height: 1024
+  maintain_aspect_ratio: true
+  quality: 95
+  format: JPEG
+
+# Storage Configuration
+storage:
+  data_folder: ./data
+  logs_folder: ./logs
+  tensor_folder: ./tensor
+
+# LLM Schema Configuration
+llm:
+  schema_file: ./config/llm_schema.yml
+  description_prompt: "Describe this image in detail, including objects, scene, colors, and context."
+  translation_target_languages:
+    - hindi
+    - english
+
+# Batch Processing
+batch:
+  max_concurrent_batches: 5
+  progress_file_name: "{folder_name}_progress.yml"
+  checkpoint_interval: 5  # Save progress every N images
+  
+# Logging
+logging:
+  level: INFO
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: ./logs/deep_sight.log
+  max_bytes: 10485760  # 10MB
+  backup_count: 5

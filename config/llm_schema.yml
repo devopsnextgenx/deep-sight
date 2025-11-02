@@ -1,0 +1,77 @@
+# LLM Response Schemas
+
+# Image Description Schema
+description_schema:
+  type: object
+  properties:
+    description:
+      type: string
+      description: Detailed description of the image content
+    objects:
+      type: array
+      items:
+        type: string
+      description: List of objects detected in the image
+    scene:
+      type: string
+      description: Overall scene or context
+    colors:
+      type: array
+      items:
+        type: string
+      description: Dominant colors in the image
+    confidence:
+      type: number
+      description: Confidence score of the description
+  required:
+    - description
+
+# Translation Schema
+translation_schema:
+  type: object
+  properties:
+    original_text:
+      type: string
+      description: Original text to translate
+    translated_text:
+      type: string
+      description: Translated text
+    target_language:
+      type: string
+      description: Target language code
+    confidence:
+      type: number
+      description: Translation confidence score
+  required:
+    - original_text
+    - translated_text
+    - target_language
+
+# Image Metadata Schema
+image_metadata_schema:
+  type: object
+  properties:
+    image_name:
+      type: string
+    extracted_text:
+      type: string
+    translated_text_hindi:
+      type: string
+    translated_text_english:
+      type: string
+    description:
+      type: string
+    metadata:
+      type: object
+      properties:
+        model_name:
+          type: string
+        datetime:
+          type: string
+        processing_time:
+          type: number
+        image_size:
+          type: object
+  required:
+    - image_name
+    - metadata
