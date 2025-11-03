@@ -19,9 +19,9 @@ class LLMAgent:
     
     def __init__(self, model):
         """Initialize LLM agent with configuration."""
+        self.model = model
         self.host = config.get('ollama.host', 'localhost')
         self.port = config.get('ollama.port', 11434)
-        self.model = model
         self.temperature = config.get('ollama.temperature', 0.7)
         self.max_tokens = config.get('ollama.max_tokens', 2048)
         self.timeout = config.get('ollama.timeout', 120)
