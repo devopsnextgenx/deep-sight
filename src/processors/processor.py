@@ -16,6 +16,7 @@ from src.processors.text_extractor import TextExtractor
 from src.processors.llm_agent import LLMAgent
 from src.models.image_data import ImageData, ImageMetadata
 from src.config_loader import config
+import yaml
 
 logger = logging.getLogger(__name__)
 
@@ -134,10 +135,10 @@ class ImageProcessorOrchestrator:
             dest_path = images_folder / image_data.image_name
             shutil.copy2(original_path, dest_path)
             logger.info(f"Image saved to {dest_path}")
-            # Save metadata as JSON
-            metadata_path = dest_path.with_suffix('.json')
+            # Save metadata as yml
+            metadata_path = dest_path.with_suffix('.yml')
             with open(metadata_path, 'w', encoding='utf-8') as f:
-                json.dump(image_data.to_dict(), f, ensure_ascii=False, indent=2)
-            
+                yaml.dump(image_data.to_dict(), f, allow_unicode=True)
+
         except Exception as e:
             logger.error(f"Error saving to storage: {e}")
