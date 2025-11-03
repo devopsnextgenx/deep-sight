@@ -134,6 +134,10 @@ class ImageProcessorOrchestrator:
             dest_path = images_folder / image_data.image_name
             shutil.copy2(original_path, dest_path)
             logger.info(f"Image saved to {dest_path}")
+            # Save metadata as JSON
+            metadata_path = dest_path.with_suffix('.json')
+            with open(metadata_path, 'w', encoding='utf-8') as f:
+                json.dump(image_data.to_dict(), f, ensure_ascii=False, indent=2)
             
         except Exception as e:
             logger.error(f"Error saving to storage: {e}")
