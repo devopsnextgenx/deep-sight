@@ -237,7 +237,7 @@ def process_image_from_url(image_url, save_to_storage):
                     'image_url': image_url,
                     'save_to_storage': save_to_storage
                 },
-                timeout=120
+                timeout=300
             )
             
             if response.status_code == 200:

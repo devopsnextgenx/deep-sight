@@ -8,7 +8,7 @@ ollama:
   lmodel: llama3.1:latest
   temperature: 0.7
   max_tokens: 2048
-  timeout: 120
+  timeout: 300
 
 # Application Ports
 app:
