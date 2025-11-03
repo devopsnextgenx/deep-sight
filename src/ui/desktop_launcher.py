@@ -1,4 +1,10 @@
 """Simple CustomTkinter launcher for future desktop integration."""
+import sys
+from pathlib import Path
+
+# Add parent directory to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+
 try:
     import customtkinter as ctk
 except ImportError:

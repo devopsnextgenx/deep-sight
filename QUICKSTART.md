@@ -22,22 +22,45 @@ ollama list
 
 ### Step 3: Run the Application
 
-**Option A: Run Everything (Recommended)**
+**Option A: Run Both (Easiest)**
+
+*Windows:*
 ```powershell
-python main.py both
+# Using PowerShell script (opens both in separate windows)
+.\start_both.ps1
+
+# OR using batch file
+.\start_both.bat
 ```
 
-This will start:
-- FastAPI server on http://localhost:8000
-- Streamlit UI on http://localhost:8501
+*Linux/Mac/WSL:*
+```bash
+# Make executable (first time only)
+chmod +x start_both.sh
 
-**Option B: Run Separately**
+# Run
+./start_both.sh
+```
+
+**Option B: Run API Only**
+```bash
+python run_api.py
+```
+This will start FastAPI server on http://localhost:8000
+
+**Option C: Run UI Only**
+```bash
+python run_ui.py
+```
+This will start Streamlit UI on http://localhost:8501
+
+**Option D: Manual (Two Terminals)**
 ```powershell
 # Terminal 1: Start API
-python main.py api
+python run_api.py
 
 # Terminal 2: Start UI
-python main.py ui
+python run_ui.py
 ```
 
 ### Step 4: Access the Application

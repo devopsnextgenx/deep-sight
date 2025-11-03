@@ -87,17 +87,17 @@ Streamlit App
 ### Data Flow
 
 ```
-Image Input
+Image Input (Original)
     ↓
-ImageProcessor (resize)
+TextExtractor (OCR on original - highest quality)
     ↓
-TextExtractor (OCR)
+ImageProcessor (resize for LLM - optimized)
     ↓
-LLMAgent (describe)
+LLMAgent (describe using resized image)
     ↓
-LLMAgent (translate to Hindi)
+LLMAgent (translate extracted text to Hindi)
     ↓
-LLMAgent (translate to English)
+LLMAgent (translate extracted text to English)
     ↓
 ImageData (structured object)
     ↓

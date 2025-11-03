@@ -8,7 +8,7 @@ from pathlib import Path
 from src.config_loader import config
 
 
-def run_api():
+def run_api(reload=True):
     """Run FastAPI server."""
     print("Starting Deep Sight API...")
     port = config.get('app.api_port', 8000)
@@ -16,7 +16,7 @@ def run_api():
         "src.api.main:app",
         host="0.0.0.0",
         port=port,
-        reload=True,
+        reload=reload,
         log_level="info"
     )
 
@@ -53,20 +53,30 @@ def run_desktop():
 
 def run_both():
     """Run both API and UI in separate processes."""
-    import threading
+    import multiprocessing
     
     print("Starting Deep Sight API and UI...")
+    print("Note: Use Ctrl+C to stop both services\n")
     
-    # Start API in a separate thread
-    api_thread = threading.Thread(target=run_api, daemon=True)
-    api_thread.start()
+    # Start API in a separate process (no reload to avoid signal issues)
+    api_process = multiprocessing.Process(target=run_api, args=(False,))
+    api_process.start()
     
     # Wait a bit for API to start
     import time
-    time.sleep(2)
+    time.sleep(3)
     
-    # Start UI in main thread
-    run_ui()
+    try:
+        # Start UI in main process
+        run_ui()
+    except KeyboardInterrupt:
+        print("\nShutting down...")
+    finally:
+        # Cleanup
+        if api_process.is_alive():
+            api_process.terminate()
+            api_process.join(timeout=5)
+        print("Services stopped.")
 
 
 def main():
@@ -91,4 +101,7 @@ def main():
 
 
 if __name__ == "__main__":
+    # Required for multiprocessing on Windows
+    import multiprocessing
+    multiprocessing.freeze_support()
     main()

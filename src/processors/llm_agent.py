@@ -2,11 +2,14 @@
 import json
 import logging
 import base64
+import sys
+from pathlib import Path
 from typing import Dict, Any, Optional
 import requests
 import yaml
 
-from ..config_loader import config
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+from src.config_loader import config
 
 logger = logging.getLogger(__name__)
 
@@ -14,11 +17,11 @@ logger = logging.getLogger(__name__)
 class LLMAgent:
     """Agent for interacting with Ollama LLM for image and text processing."""
     
-    def __init__(self):
+    def __init__(self, model):
         """Initialize LLM agent with configuration."""
         self.host = config.get('ollama.host', 'localhost')
         self.port = config.get('ollama.port', 11434)
-        self.model = config.get('ollama.model', 'llava')
+        self.model = model
         self.temperature = config.get('ollama.temperature', 0.7)
         self.max_tokens = config.get('ollama.max_tokens', 2048)
         self.timeout = config.get('ollama.timeout', 120)

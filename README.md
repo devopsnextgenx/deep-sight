@@ -5,7 +5,9 @@ AI-Powered Image Processing & Analysis with OCR, LLM Description, and Translatio
 ## Features
 
 - 📝 **Text Extraction**: Extract text from images using TensorFlow OCR (Keras-OCR or Tesseract)
+  - **Optimized**: OCR runs on original high-resolution images for maximum accuracy
 - 🖼️ **Image Description**: Generate detailed descriptions using Ollama LLM
+  - **Efficient**: Uses resized images for faster LLM processing
 - 🌐 **Translation**: Translate extracted text to Hindi and English
 - 📁 **Batch Processing**: Process entire folders of images with progress tracking
 - 💾 **Progress Checkpointing**: Resume interrupted batch processing
@@ -78,29 +80,47 @@ deep-sight/
 
 ## Usage
 
-### Quick Start (API + UI)
+### Quick Start
+
+**Windows:**
+```powershell
+.\start_both.ps1  # Opens both in separate windows
+```
+
+**Linux/Mac/WSL:**
+```bash
+chmod +x start_both.sh  # First time only
+./start_both.sh
+```
+
+### Run Services Individually
+
+**API:**
+```bash
+python run_api.py
+```
+Access Swagger docs at: http://localhost:8000/docs
+
+**UI:**
+```bash
+python run_ui.py
+```
+Access UI at: http://localhost:8501
+
+### Alternative: Run Both (using main.py)
 
 ```powershell
 python main.py both
 ```
 
-This starts both the FastAPI server and Streamlit UI.
-
-### Run API Only
-
+Or run separately:
 ```powershell
+# Terminal 1
 python main.py api
-```
 
-Access Swagger docs at: http://localhost:8000/docs
-
-### Run UI Only
-
-```powershell
+# Terminal 2  
 python main.py ui
 ```
-
-Access UI at: http://localhost:8501
 
 ### Run Desktop Launcher (Optional)
 

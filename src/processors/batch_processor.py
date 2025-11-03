@@ -4,13 +4,16 @@ import uuid
 import yaml
 import logging
 import threading
+import sys
 from pathlib import Path
 from typing import Dict, List, Optional
 from datetime import datetime
 
-from .processor import ImageProcessorOrchestrator
-from ..models.image_data import BatchProgress, ImageData
-from ..config_loader import config
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+
+from src.processors.processor import ImageProcessorOrchestrator
+from src.models.image_data import BatchProgress, ImageData
+from src.config_loader import config
 
 logger = logging.getLogger(__name__)
 

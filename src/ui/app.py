@@ -6,8 +6,17 @@ from pathlib import Path
 import time
 from typing import Dict, Any
 from PIL import Image
+import sys
+import os
 
-from ..config_loader import config
+# Add parent directory to path for imports
+if __name__ == "__main__":
+    sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+
+try:
+    from src.config_loader import config
+except ImportError:
+    from config_loader import config
 
 # Page configuration
 st.set_page_config(

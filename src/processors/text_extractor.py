@@ -1,9 +1,12 @@
 """Text extraction from images using TensorFlow."""
 import logging
+import sys
+from pathlib import Path
 from typing import Optional
 import numpy as np
 
-from ..config_loader import config
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+from src.config_loader import config
 
 logger = logging.getLogger(__name__)
 

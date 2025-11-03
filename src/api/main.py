@@ -1,6 +1,7 @@
 """FastAPI application for Deep Sight."""
 import logging
 import os
+import sys
 from pathlib import Path
 from typing import Dict, Any
 import requests
@@ -10,10 +11,13 @@ from fastapi import FastAPI, File, UploadFile, HTTPException, Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from ..config_loader import config
-from ..processors.processor import ImageProcessorOrchestrator
-from ..processors.batch_processor import BatchProcessor
-from ..models.image_data import ProcessingRequest, BatchProcessingRequest
+# Add parent directory to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+
+from src.config_loader import config
+from src.processors.processor import ImageProcessorOrchestrator
+from src.processors.batch_processor import BatchProcessor
+from src.models.image_data import ProcessingRequest, BatchProcessingRequest
 
 # Setup logging
 logging.basicConfig(

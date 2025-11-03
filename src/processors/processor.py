@@ -1,19 +1,25 @@
 """Main processor orchestrator for image processing pipeline."""
 import time
 import logging
+import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, Any, Optional
 import shutil
 
-from .image_processor import ImageProcessor
-from .text_extractor import TextExtractor
-from .llm_agent import LLMAgent
-from ..models.image_data import ImageData, ImageMetadata
-from ..config_loader import config
+import json
+
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+
+from src.processors.image_processor import ImageProcessor
+from src.processors.text_extractor import TextExtractor
+from src.processors.llm_agent import LLMAgent
+from src.models.image_data import ImageData, ImageMetadata
+from src.config_loader import config
 
 logger = logging.getLogger(__name__)
 
+from src.config_loader import config
 
 class ImageProcessorOrchestrator:
     """Orchestrate the complete image processing pipeline."""
@@ -22,11 +28,18 @@ class ImageProcessorOrchestrator:
         """Initialize all processors."""
         self.image_processor = ImageProcessor()
         self.text_extractor = TextExtractor()
-        self.llm_agent = LLMAgent()
+        self.vllm_agent = LLMAgent(config.get('ollama.vmodel', 'qwen3-vl:4b'))
+        self.llm_agent = LLMAgent(config.get('ollama.lmodel', 'llama3.1:latest'))
     
     def process_image(self, image_path: str, save_to_storage: bool = True) -> ImageData:
         """
         Process a single image through the complete pipeline.
+        
+        Pipeline steps:
+        1. OCR text extraction on original image (highest quality)
+        2. Image resizing for LLM processing (optimized size)
+        3. LLM image description (using resized image)
+        4. Text translation to Hindi and English
         
         Args:
             image_path: Path to image file
@@ -41,27 +54,29 @@ class ImageProcessorOrchestrator:
         try:
             logger.info(f"Processing image: {image_name}")
             
-            # Step 1: Resize image
-            resized_path, new_size = self.image_processor.resize_image(image_path)
-            logger.info(f"Image resized to {new_size}")
-            
-            # Step 2: Extract text using OCR
-            extracted_text = self.text_extractor.extract_text(resized_path)
+            # Step 1: Extract text using OCR on ORIGINAL image (better quality)
+            extracted_text = self.text_extractor.extract_text(image_path)
             logger.info(f"Text extracted: {len(extracted_text)} characters")
             
+            # Step 2: Resize image for LLM processing (smaller, faster)
+            resized_path, new_size = self.image_processor.resize_image(image_path)
+            logger.info(f"Image resized to {new_size} for LLM processing")
+            
             # Step 3: Get image description from LLM
-            description_result = self.llm_agent.describe_image(resized_path)
+            description_result = self.vllm_agent.describe_image(resized_path)
             description = description_result.get('description', '')
             logger.info(f"Description generated: {len(description)} characters")
             
             # Step 4: Translate text to Hindi
             hindi_result = self.llm_agent.translate_text(extracted_text, 'hindi')
             translated_hindi = hindi_result.get('translated_text', '')
+            logger.info(f"Text translated to Hindi: {len(translated_hindi)} characters")
             
             # Step 5: Translate text to English (if not already in English)
             english_result = self.llm_agent.translate_text(extracted_text, 'english')
             translated_english = english_result.get('translated_text', '')
-            
+            logger.info(f"Text translated to English: {len(translated_english)} characters")
+
             # Calculate processing time
             processing_time = time.time() - start_time
             
@@ -83,7 +98,10 @@ class ImageProcessorOrchestrator:
                 description=description,
                 metadata=metadata
             )
-            
+            # convert to json and print pretty
+            json_data = image_data.to_dict()
+            print(f"ImageData: {json.dumps(json_data, indent=2)}")
+            logger.info(f"ImageData: {json.dumps(json_data, indent=2)}")
             # Save to storage if requested
             if save_to_storage:
                 self._save_to_storage(image_path, resized_path, image_data)

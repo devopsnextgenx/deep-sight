@@ -1,11 +1,13 @@
 """Image processing utilities."""
 import os
+import sys
 from PIL import Image
 from pathlib import Path
 from typing import Tuple, Optional
 import logging
 
-from ..config_loader import config
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+from src.config_loader import config
 
 logger = logging.getLogger(__name__)
 
