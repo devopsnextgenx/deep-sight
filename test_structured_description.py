@@ -82,6 +82,7 @@ def test_structured_description():
     test_image = image_files[0]
     # test_image = "data/images/470031571_920626546852346_2254552615187365620_n.jpg"
     test_image = "data/images/189246343_116718763909799_5426608247449185417_n.jpg"
+    # test_image = "data/images/527273796_765430096064125_1348122522665340777_n.jpg"
     print(f"📸 Testing with image: {test_image}")
     
     # Test structured description
