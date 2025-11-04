@@ -261,7 +261,7 @@ def display_processing_result(data: Dict[str, Any]):
     
     # Extracted Text
     st.markdown("#### 📝 Extracted Text")
-    st.text_area("Original Text", data['extracted_text'], height=100)
+    st.text_area("Original Text", data['extracted_text'] or data["description_text"], height=100)
     
     # Translations
     col1, col2 = st.columns(2)

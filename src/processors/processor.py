@@ -65,18 +65,42 @@ class ImageProcessorOrchestrator:
             
             # Step 3: Get image description from LLM
             description_result = self.vllm_agent.describe_image(resized_path)
+            
+            # Extract structured description data
             description = description_result.get('description', '')
+            description_text = description_result.get('text', '')
+            description_scene = description_result.get('scene', '')
+            description_context = description_result.get('context', '')
+            
             logger.info(f"Description generated: {len(description)} characters")
+            logger.info(f"Scene: {description_scene[:50]}..." if len(description_scene) > 50 else f"Scene: {description_scene}")
+            logger.info(f"Context: {description_context[:50]}..." if len(description_context) > 50 else f"Context: {description_context}")
+            if description_text:
+                logger.info(f"Text found in image: {len(description_text)} characters")
+            
+            # Log extracted text for debugging
+            logger.info(f"Extracted text for translation: {len(extracted_text)} characters")
+            if extracted_text:
+                logger.info(f"Sample extracted text: {extracted_text[:100]}...")
+            
+            # Determine text to translate - prefer OCR but fallback to LLM description text
+            text_to_translate = extracted_text if extracted_text.strip() else description_text
+            if text_to_translate != extracted_text:
+                logger.info(f"Using LLM description text for translation instead of OCR: {len(text_to_translate)} characters")
             
             # Step 4: Translate text to Hindi
-            hindi_result = self.llm_agent.translate_text(extracted_text, 'hindi')
+            hindi_result = self.llm_agent.translate_text('Hindi', text_to_translate, description_context, description_scene)
             translated_hindi = hindi_result.get('translated_text', '')
             logger.info(f"Text translated to Hindi: {len(translated_hindi)} characters")
+            if not hindi_result.get('success', True):
+                logger.warning(f"Hindi translation failed: {hindi_result.get('error', 'Unknown error')}")
             
             # Step 5: Translate text to English (if not already in English)
-            english_result = self.llm_agent.translate_text(extracted_text, 'english')
+            english_result = self.llm_agent.translate_text('English', text_to_translate, description_context, description_scene)
             translated_english = english_result.get('translated_text', '')
             logger.info(f"Text translated to English: {len(translated_english)} characters")
+            if not english_result.get('success', True):
+                logger.warning(f"English translation failed: {english_result.get('error', 'Unknown error')}")
 
             # Calculate processing time
             processing_time = time.time() - start_time
@@ -97,6 +121,9 @@ class ImageProcessorOrchestrator:
                 translated_text_hindi=translated_hindi,
                 translated_text_english=translated_english,
                 description=description,
+                description_text=description_text,
+                description_scene=description_scene,
+                description_context=description_context,
                 metadata=metadata
             )
             # convert to json and print pretty

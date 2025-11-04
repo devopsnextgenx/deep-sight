@@ -20,6 +20,10 @@ class ImageData(BaseModel):
     translated_text_hindi: str = ""
     translated_text_english: str = ""
     description: str = ""
+    # New structured description fields
+    description_text: str = ""  # Text found in image
+    description_scene: str = ""  # Scene description
+    description_context: str = ""  # Context description
     metadata: ImageMetadata
     
     def to_dict(self) -> Dict[str, Any]:

@@ -4,27 +4,23 @@
 description_schema:
   type: object
   properties:
+    text:
+      type: string
+      description: Any readable text found in the image
     description:
       type: string
       description: Detailed description of the image content
-    objects:
-      type: array
-      items:
-        type: string
-      description: List of objects detected in the image
     scene:
       type: string
-      description: Overall scene or context
-    colors:
-      type: array
-      items:
-        type: string
-      description: Dominant colors in the image
-    confidence:
-      type: number
-      description: Confidence score of the description
+      description: Overall scene or setting of the image
+    context:
+      type: string
+      description: Context or situation depicted in the image
   required:
+    - text
     - description
+    - scene
+    - context
 
 # Translation Schema
 translation_schema:
